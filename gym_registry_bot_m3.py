@@ -116,13 +116,17 @@ def registry(name, time_, gym_registry):
 def hour_range(day, hour=None):
     """
     На входе:
-    day = день недели 6-суб, 0-вск
+    day = день недели 6-суб, 0-вск, 1-остальные дни
     hour = время, на которое хочет записаться клиент
     Возвращает:
     Кортеж (от"НН", до"НН") с часами, на которые доступна запись в зависимости от дня недели и времени когда делается запрос
     No - значит запись на сегодня уже недоступна(при запросе в последний час работы зала или после закрытия)
     """
-    days = {0:(9, 21), 6:(8, 21), 1:(7, 23)} # "код дня недели:(режим работы (ч) от, до)"
+
+    # "код дня недели:(режим работы (ч) от, до)"
+    days = {0:(conf.sunday_work_from, conf.sunday_work_to),
+            6:(conf.saturday_work_from, conf.saturday_work_to),
+            1:(conf.work_day_from, conf.work_day_to)}
     if day not in days.keys():
         day = 1
     if hour == None or hour < days[day][0]:
