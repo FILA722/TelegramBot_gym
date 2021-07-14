@@ -1,8 +1,8 @@
 from random import randint
 import json
-import confidential
+import conf
 
-registry_file_dir = confidential.file_dir
+registry_file_dir = conf.file_dir
 
 #пределы колличества записей, которые будут сгенерированы
 NUM_FROM = 400
@@ -71,13 +71,13 @@ names = ['Александра', 'Алина', 'Алиса', 'Алла', 'Аль
           'Руслан', 'Семён', 'Сергей', 'Степан', 'Тимофей', 'Фёдор', 'Юрий', 'Ян', 'Ярослав']
 
 """
-Ф-ция генерирует запись запись клиента и записывает его в файл.
+Ф-ция генерирует запись клиента и записывает его в файл.
 """
 def alarm():
     generated = {}
     for _ in range(randint(NUM_FROM, NUM_TO)):
         user_id = randint(100000, 999999)
-        hour = randint(7, 22)
+        hour = randint(conf.work_day_from, conf.work_day_to - 1)
         surname = randint(0, 437)
         name = randint(0, 132)
         generated[user_id] = [1, {f'{surnames_list[surname]} {names[name]}': hour}]
