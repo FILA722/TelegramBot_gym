@@ -123,7 +123,7 @@ def hour_range(day, hour=None):
     No - значит запись на сегодня уже недоступна(при запросе в последний час работы зала или после закрытия)
     """
 
-    # "код дня недели:(режим работы (ч) от, до)"
+    # код дня недели:(режим работы (ч) от, до), указаны в сonf.py
     days = {0:(conf.sunday_work_from, conf.sunday_work_to),
             6:(conf.saturday_work_from, conf.saturday_work_to),
             1:(conf.work_day_from, conf.work_day_to)}
