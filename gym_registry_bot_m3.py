@@ -5,13 +5,18 @@ from telebot import types
 import time as t
 from datetime import *
 import gym_registry_bot_alarm
-import confidential
+import conf
 
-bot = telebot.TeleBot(confidential.bot_id)
-registry_file_dir = confidential.file_dir #директория, где будут храниться файлы со списком клиентов, которые записались на занятие
-spy_file = confidential.spy_file
+bot = telebot.TeleBot(conf.bot_id)
 
-REG_VALUE = 3 #кол-во записей, котрые можно сделать с одного id в день.
+#директория, где будут храниться файлы со списком клиентов, которые записались на занятие
+registry_file_dir = conf.file_dir
+
+#файл с данными о работе бота
+spy_file = conf.spy_file
+
+#кол-во записей, котрые можно сделать с одного id в день.
+REG_VALUE = conf.REG_VALUE
 
 month = {
         '01':'січня',
@@ -51,9 +56,11 @@ def check_registry(name, time_):
     """
     input_name = name.split(' ', 1)
     second_name_sep, name_sep = input_name[0], input_name[1]
+
     # Убрать из имени и фамилии пробелы, а также возможные лишние символы
     second_name_sep = second_name_sep.strip('.!"№%:,.;(){}[]/><#@$^&*_+-=|')
     name_sep = name_sep.strip('.!"№%:,.;(){}[]/><#@$^&*_+-=|')
+
     #формируем имя файла день_месяц_год
     if client_registry_data[0] == 'Сьогодні':
         file_name = f'{int(t.strftime("%d", t.localtime()))}_{t.strftime("%m", t.localtime())}_{t.strftime("%Y", t.localtime())}.json'
@@ -136,6 +143,9 @@ def registry_btn(message):
     markup.add(today, tomorrow)
     bot.send_message(message.chat.id, "Вітаю! Ви хочете записатись на тренування сьогодні чи завтра? Оберіть варіант нижче:", reply_markup=markup)
 
+"""
+Команда администратора, которая выведет список имеющихся файлов с записями клиентов.
+"""
 @bot.message_handler(commands=['r2d2'])
 def admin_mode(message):
     """
@@ -150,10 +160,10 @@ def admin_mode(message):
         btn.add(btn_hour)
     bot.send_message(message.chat.id, reply_markup=btn, text='Список имеющихся файлов:')
 
+"""
+Команда возвращает кол-во уникальных пользователей (users) и общее кол-во обращений к боту (cycles). 
+"""
 @bot.message_handler(commands=['spy'])
-"""
-Отвеча
-"""
 def spy_mode(message):
     with open(spy_file, 'r') as spy:
         dataset = json.load(spy)
@@ -162,7 +172,9 @@ def spy_mode(message):
         for cycle in dataset.keys():
             cycles += dataset[cycle] #приба
         bot.send_message(message.chat.id, f'Users = {users}\nCycles = {cycles}')
-
+"""
+Генерирует рандомные имена клиентов и время их записи на занятие на весь день 
+"""
 @bot.message_handler(commands=['alarm'])
 def alarm(message):
     bot.send_message(message.chat.id, 'Генерирую файл с generated.txt c именами клиентов...')
@@ -197,6 +209,7 @@ def alarm(message):
 def hours_buttons(message):
     day_now = int(t.strftime("%w", t.localtime()))
     hour_now = int(t.strftime("%H", t.localtime()))
+
     # Обработка если клиент передал день
     if message.text == 'Сьогодні':
         client_registry_data.clear()
@@ -239,12 +252,11 @@ def hours_buttons(message):
             bot.send_message(message.chat.id, "Ви хочете записатись на сьогодні чи на завтра? Будь-ласка оберіть варіант знизу:")
         else: #пустить процедуру проверки имени с последующей записей
             bot.send_message(message.chat.id, check_registry(message.text, client_registry_data[1]))
-
+"""
+Тут обрабатываються запросы с экранной клавы
+"""
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
-    """
-    Тут обрабатываються запросы с экранной клавы
-    """
     if len(call.data) in (1,2) and str(call.data).isdigit(): # обработка если клиент передал время
         hour = call.data
         user_id = call.from_user.id
@@ -254,6 +266,7 @@ def callback_inline(call):
     elif '_' in str(call.data) and str(call.data)[10:] == '.json': # после выбора файла открыть его и выслать
         user_dict = {}
         file_name_txt = registry_file_dir + str(call.data)[:10] + '.txt'
+
         with open(registry_file_dir + str(call.data), 'r') as text:
             l = json.load(text)
             for user_id in l:
@@ -263,6 +276,7 @@ def callback_inline(call):
                         user_dict[time].append(user_name)
                     else:
                         user_dict[time] = [user_name]
+
         with open(file_name_txt, 'w') as output:
             total_count = 0
             for t in sorted(user_dict.keys()):

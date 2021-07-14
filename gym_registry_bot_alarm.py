@@ -1,9 +1,10 @@
 from random import randint
 import json
+import confidential
 
-# file_dir = '/Users/fila/Documents/Python/FitnessExpert/gym_registry_bot/files/' # mac
-file_dir = '/home/pi/Documents/Python/gym_registry_files/' #raspbian
+registry_file_dir = confidential.file_dir
 
+#пределы колличества записей, которые будут сгенерированы
 NUM_FROM = 400
 NUM_TO = 600
 
@@ -69,6 +70,9 @@ names = ['Александра', 'Алина', 'Алиса', 'Алла', 'Аль
           'Константин', 'Лев', 'Максим', 'Марк', 'Матвей', 'Михаил', 'Никита', 'Николай', 'Олег', 'Павел', 'Петр', 'Пётр', 'Роман',
           'Руслан', 'Семён', 'Сергей', 'Степан', 'Тимофей', 'Фёдор', 'Юрий', 'Ян', 'Ярослав']
 
+"""
+Ф-ция генерирует запись запись клиента и записывает его в файл.
+"""
 def alarm():
     generated = {}
     for _ in range(randint(NUM_FROM, NUM_TO)):
@@ -78,5 +82,5 @@ def alarm():
         name = randint(0, 132)
         generated[user_id] = [1, {f'{surnames_list[surname]} {names[name]}': hour}]
     generated_json = json.dumps(generated)
-    with open(file_dir+'generated.json', 'w') as gen:
+    with open(registry_file_dir + 'generated.json', 'w') as gen:
         gen.write(generated_json)
