@@ -19,18 +19,18 @@ spy_file = conf.spy_file
 REG_VALUE = conf.REG_VALUE
 
 month = {
-        '01':'січня',
-        '02':'лютого',
-        '03':'березня',
-        '04':'квітня',
-        '05':'травня',
-        '06':'червня',
-        '07':'липня',
-        '08':'серпня',
-        '09':'вересня',
-        '10':'жовтня',
-        '11':'листопада',
-        '12':'грудня'
+        '01': 'січня',
+        '02': 'лютого',
+        '03': 'березня',
+        '04': 'квітня',
+        '05': 'травня',
+        '06': 'червня',
+        '07': 'липня',
+        '08': 'серпня',
+        '09': 'вересня',
+        '10': 'жовтня',
+        '11': 'листопада',
+        '12': 'грудня'
         }
 #список с данными от пользователя. (сегодня/завтра, время записи, user_id)
 client_registry_data = []
@@ -124,9 +124,9 @@ def hour_range(day, hour=None):
     """
 
     # код дня недели:(режим работы (ч) от, до), указаны в сonf.py
-    days = {0:(conf.sunday_work_from, conf.sunday_work_to),
-            6:(conf.saturday_work_from, conf.saturday_work_to),
-            1:(conf.work_day_from, conf.work_day_to)}
+    days = {0: (conf.sunday_work_from, conf.sunday_work_to),
+            6: (conf.saturday_work_from, conf.saturday_work_to),
+            1: (conf.work_day_from, conf.work_day_to)}
     if day not in days.keys():
         day = 1
     if hour == None or hour < days[day][0]:

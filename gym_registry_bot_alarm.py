@@ -2,6 +2,7 @@ from random import randint
 import json
 import conf
 
+#директория, куда поместить записи клиетов (указать в сonf.py)
 registry_file_dir = conf.file_dir
 
 #пределы колличества записей, которые будут сгенерированы (указать в сonf.py)
@@ -74,13 +75,13 @@ names = ['Александра', 'Алина', 'Алиса', 'Алла', 'Аль
 Ф-ция генерирует запись клиента и записывает его в файл.
 """
 def alarm():
-    generated = {}
+    generated_user = {}
     for _ in range(randint(NUM_FROM, NUM_TO)):
         user_id = randint(100000, 999999)
         hour = randint(conf.work_day_from, conf.work_day_to - 1)
         surname = randint(0, 437)
         name = randint(0, 132)
-        generated[user_id] = [1, {f'{surnames_list[surname]} {names[name]}': hour}]
-    generated_json = json.dumps(generated)
+        generated_user[user_id] = [1, {f'{surnames_list[surname]} {names[name]}': hour}]
+    generated_json = json.dumps(generated_user)
     with open(registry_file_dir + 'generated.json', 'w') as gen:
         gen.write(generated_json)
